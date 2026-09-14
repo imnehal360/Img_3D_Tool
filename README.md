@@ -1,4 +1,4 @@
-# Image-to-3D Generation
+# Image-to-3D Generation & Meshy Benchmarking System
 
 This repository implements the first P0 slice from the SRS: image input, preprocessing, open-source image-to-3D generation, GLB export, a basic preview, and measured metrics.
 
@@ -22,6 +22,13 @@ Implemented:
 - HTML preview for Colab
 - metrics JSON output
 - reproducible Colab notebook skeleton
+
+Not implemented yet:
+
+- five-example final benchmark
+- Meshy API execution
+- side-by-side Meshy comparison
+- qualitative evaluation table
 
 Those should come after the single-image pipeline has been run successfully on a compatible Colab GPU.
 
@@ -52,4 +59,5 @@ python3 -m pip install -r requirements.txt
 python3 -m unittest discover -s tests
 ```
 
+These tests do not claim image-to-3D quality and do not fabricate benchmark results.
 

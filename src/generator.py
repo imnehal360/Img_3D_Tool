@@ -179,13 +179,35 @@ class TrellisGenerator:
                 "cfg_strength": self.config.slat_cfg_strength,
             },
         )
-        glb = postprocessing_utils.to_glb(
-            outputs["gaussian"][0],
-            outputs["mesh"][0],
-            simplify=self.config.glb_simplify,
-            texture_size=self.config.texture_resolution,
-        )
-        glb.export(model_path)
+        try:
+            glb = postprocessing_utils.to_glb(
+                outputs["gaussian"][0],
+                outputs["mesh"][0],
+                simplify=self.config.glb_simplify,
+                texture_size=self.config.texture_resolution,
+            )
+            glb.export(model_path)
+        except RuntimeError as exc:
+            cuda_allocation_error = "cuda" in str(exc).lower() and (
+                "malloc" in str(exc).lower()
+                or "memory" in str(exc).lower()
+                or "allocation" in str(exc).lower()
+            )
+            if not self.config.enable_untextured_fallback or not cuda_allocation_error:
+                raise
+
+            # TRELLIS can finish inference but run out of VRAM during its
+            # 100-view optimized texture bake. Preserve the generated mesh
+            # as a valid, untextured GLB so the request does not become 500.
+            import torch
+            import trimesh
+
+            print("Texture baking ran out of CUDA memory; exporting untextured GLB fallback.")
+            torch.cuda.empty_cache()
+            mesh = outputs["mesh"][0]
+            vertices = mesh.vertices.detach().cpu().numpy()
+            faces = mesh.faces.detach().cpu().numpy()
+            trimesh.Trimesh(vertices=vertices, faces=faces, process=False).export(model_path)
         elapsed = round(time.perf_counter() - start, 4)
 
         return GenerationResult(

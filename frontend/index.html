@@ -1,239 +1,588 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Depthcast — Image to 3D</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Space+Grotesk:wght@400;500;600&display=swap');
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Im3D — Image to 3D</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300..700&family=Space+Grotesk:wght@400;500;600&display=swap');
 
-  :root{
-    --bg: #0d1113;
-    --bg-panel: #12171a;
-    --line: #23292c;
-    --ink: #eef1f0;
-    --ink-dim: #9aa5a3;
-    --accent: #ff8a3d;
-    --accent-dim: #7a4a26;
-    --ok: #6bd3a3;
-    --err: #ff6b6b;
-    --radius: 3px;
-  }
+    :root {
+      --bg: #0d1113;
+      --bg-panel: #12171a;
+      --line: #23292c;
+      --ink: #eef1f0;
+      --ink-dim: #9aa5a3;
+      --accent: #ff8a3d;
+      --accent-dim: #7a4a26;
+      --ok: #6bd3a3;
+      --err: #ff6b6b;
+      --radius: 3px;
+    }
 
-  *{ box-sizing:border-box; }
-  html,body{ height:100%; }
-  body{
-    margin:0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family:'Space Grotesk', sans-serif;
-    min-height:100vh;
-  }
+    * {
+      box-sizing: border-box;
+    }
 
-  .wrap{ max-width:1180px; margin:0 auto; padding:0 28px; }
+    html,
+    body {
+      height: 100%;
+    }
 
-  header{ padding:42px 0 28px; border-bottom:1px solid var(--line); }
-  header .wrap{ display:flex; align-items:baseline; justify-content:space-between; gap:24px; flex-wrap:wrap; }
-  .brand{ display:flex; align-items:baseline; gap:14px; }
-  .brand h1{
-    font-family:'Fraunces', serif;
-    font-weight:600;
-    font-optical-sizing:auto;
-    font-size:32px;
-    margin:0;
-    letter-spacing:-0.01em;
-  }
-  .brand .mark{ color: var(--accent); font-style: italic; font-weight: 500;}
-  header p{ margin:0; color:var(--ink-dim); font-size:14px; max-width:380px; line-height:1.5; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+    }
 
-  main{ padding:44px 0 80px; }
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 28px;
+    }
 
-  .stage{
-    display:grid;
-    grid-template-columns: 1fr 1fr;
-    gap:1px;
-    background: var(--line);
-    border:1px solid var(--line);
-    border-radius: var(--radius);
-    overflow:hidden;
-  }
-  @media (max-width: 860px){ .stage{ grid-template-columns: 1fr; } }
+    header {
+      padding: 42px 0 28px;
+      border-bottom: 1px solid var(--line);
+    }
 
-  .pane{ background: var(--bg-panel); display:flex; flex-direction:column; min-height:480px; }
-  .pane-head{
-    display:flex; align-items:center; justify-content:space-between;
-    padding:16px 20px; border-bottom:1px solid var(--line);
-  }
-  .pane-head .label{
-    font-size:12px; letter-spacing:0.04em; color:var(--ink-dim);
-  }
-  .pane-head .idx{
-    font-family:'Fraunces', serif; font-style:italic; color:var(--accent); font-size:15px;
-  }
+    header .wrap {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
 
-  .pane-body{ flex:1; position:relative; display:flex; align-items:center; justify-content:center; }
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 14px;
+    }
 
-  /* --- Dropzone / upload pane --- */
-  .dropzone{
-    width:100%; height:100%; min-height:420px;
-    display:flex; flex-direction:column; align-items:center; justify-content:center;
-    gap:14px; padding:32px; text-align:center; cursor:pointer;
-    transition: background .15s ease;
-  }
-  .dropzone.drag{ background: rgba(255,138,61,0.06); }
-  .dropzone input{ display:none; }
-  .dz-icon{ width:46px; height:46px; opacity:0.8; }
-  .dz-title{ font-size:15px; color:var(--ink); }
-  .dz-sub{ font-size:12.5px; color:var(--ink-dim); }
-  .dz-sub kbd{
-    font-family:inherit; background:var(--bg); border:1px solid var(--line);
-    padding:1px 6px; border-radius:2px; font-size:11.5px;
-  }
+    .brand h1 {
+      font-family: 'Fraunces', serif;
+      font-weight: 600;
+      font-optical-sizing: auto;
+      font-size: 32px;
+      margin: 0;
+      letter-spacing: -0.01em;
+    }
 
-  .preview-img-wrap{ width:100%; height:100%; position:relative; }
-  .preview-img-wrap img{ width:100%; height:100%; object-fit:contain; display:block; }
-  .swap-btn{
-    position:absolute; bottom:16px; right:16px;
-    background: rgba(13,17,19,0.85); color:var(--ink);
-    border:1px solid var(--line); padding:8px 14px; font-size:12.5px;
-    border-radius: var(--radius); cursor:pointer; font-family:inherit;
-  }
-  .swap-btn:hover{ border-color: var(--accent); color: var(--accent); }
+    .brand .mark {
+      color: var(--accent);
+      font-style: italic;
+      font-weight: 500;
+    }
 
-  /* --- 3D pane --- */
-  #viewer-canvas{ width:100%; height:100%; display:block; }
-  .viewer-empty{ color: var(--ink-dim); font-size:13.5px; text-align:center; padding:32px; line-height:1.6; }
-  .viewer-empty .glyph{ font-size:26px; display:block; margin-bottom:10px; color:var(--accent-dim); }
+    header p {
+      margin: 0;
+      color: var(--ink-dim);
+      font-size: 14px;
+      max-width: 380px;
+      line-height: 1.5;
+    }
 
-  .viewer-hint{
-    position:absolute; left:16px; bottom:14px; font-size:11.5px; color:var(--ink-dim);
-    pointer-events:none; letter-spacing:0.01em;
-  }
+    .nav-link {
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 13px;
+      border-bottom: 1px solid var(--accent);
+      padding-bottom: 3px;
+    }
 
-  /* --- Loading overlay --- */
-  .overlay{
-    position:absolute; inset:0; background: rgba(13,17,19,0.82);
-    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:14px;
-  }
-  .spinner{
-    width:30px; height:30px; border-radius:50%;
-    border:2px solid var(--line); border-top-color: var(--accent);
-    animation: spin 0.85s linear infinite;
-  }
-  @keyframes spin{ to{ transform: rotate(360deg); } }
-  .overlay-txt{ font-size:12.5px; color:var(--ink-dim); letter-spacing:0.02em; }
+    .nav-link:hover {
+      color: var(--accent);
+    }
 
-  /* --- Action bar --- */
-  .actions{
-    display:flex; align-items:center; justify-content:space-between;
-    gap:16px; margin-top:22px; flex-wrap:wrap;
-  }
-  .status{ font-size:13px; color:var(--ink-dim); min-height:18px; }
-  .status.err{ color: var(--err); }
-  .status.ok{ color: var(--ok); }
+    main {
+      padding: 44px 0 80px;
+    }
 
-  .btn-row{ display:flex; gap:10px; }
-  button.primary, a.download{
-    font-family:inherit; font-size:13.5px; letter-spacing:0.01em;
-    background: var(--accent); color:#171008; border:none;
-    padding:12px 22px; border-radius: var(--radius); cursor:pointer;
-    text-decoration:none; display:inline-flex; align-items:center; gap:8px;
-    transition: transform .1s ease, opacity .15s ease;
-  }
-  button.primary:disabled{ opacity:0.35; cursor:not-allowed; }
-  button.primary:not(:disabled):hover{ transform: translateY(-1px); }
+    .stage {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1px;
+      background: var(--line);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
 
-  button.ghost{
-    font-family:inherit; font-size:13.5px; background:transparent; color:var(--ink-dim);
-    border:1px solid var(--line); padding:12px 18px; border-radius:var(--radius); cursor:pointer;
-  }
-  button.ghost:hover{ color:var(--ink); border-color:var(--ink-dim); }
+    @media (max-width: 860px) {
+      .stage {
+        grid-template-columns: 1fr;
+      }
+    }
 
-  footer{ border-top:1px solid var(--line); padding:20px 0 40px; }
-  footer .wrap{ display:flex; justify-content:space-between; color:var(--ink-dim); font-size:12px; flex-wrap:wrap; gap:8px;}
-  footer code{ background:var(--bg-panel); border:1px solid var(--line); padding:1px 6px; border-radius:2px; }
-</style>
+    .pane {
+      background: var(--bg-panel);
+      display: flex;
+      flex-direction: column;
+      min-height: 480px;
+    }
+
+    .pane-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .pane-head .label {
+      font-size: 12px;
+      letter-spacing: 0.04em;
+      color: var(--ink-dim);
+    }
+
+    .pane-head .idx {
+      font-family: 'Fraunces', serif;
+      font-style: italic;
+      color: var(--accent);
+      font-size: 15px;
+    }
+
+    .pane-body {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* --- Examples gallery --- */
+    .examples {
+      margin-top: 42px;
+    }
+
+    .examples-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: end;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+
+    .examples h2 {
+      font-family: 'Fraunces', serif;
+      font-size: 25px;
+      font-weight: 500;
+      margin: 0;
+    }
+
+    .examples-copy {
+      color: var(--ink-dim);
+      font-size: 13px;
+      margin: 5px 0 0;
+    }
+
+    .examples-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 14px;
+    }
+
+    .example-card {
+      background: var(--bg-panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .example-card-head {
+      padding: 12px 14px;
+      display: flex;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .example-card-title {
+      font-size: 13px;
+      color: var(--ink);
+    }
+
+    .example-card-label {
+      color: var(--ink-dim);
+      font-size: 11px;
+      letter-spacing: .04em;
+    }
+
+    .example-compare {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 230px;
+    }
+
+    .example-input {
+      width: 100%;
+      height: 230px;
+      object-fit: contain;
+      background: #0b0e10;
+      display: block;
+    }
+
+    .example-model {
+      width: 100%;
+      height: 230px;
+      background: #151515;
+    }
+
+    .example-card-foot {
+      padding: 10px 14px;
+      color: var(--ink-dim);
+      font-size: 11px;
+      border-top: 1px solid var(--line);
+    }
+
+    .examples-empty {
+      border: 1px dashed var(--line);
+      color: var(--ink-dim);
+      padding: 28px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    /* --- Dropzone / upload pane --- */
+    .dropzone {
+      width: 100%;
+      height: 100%;
+      min-height: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 32px;
+      text-align: center;
+      cursor: pointer;
+      transition: background .15s ease;
+    }
+
+    .dropzone.drag {
+      background: rgba(255, 138, 61, 0.06);
+    }
+
+    .dropzone input {
+      display: none;
+    }
+
+    .dz-icon {
+      width: 46px;
+      height: 46px;
+      opacity: 0.8;
+    }
+
+    .dz-title {
+      font-size: 15px;
+      color: var(--ink);
+    }
+
+    .dz-sub {
+      font-size: 12.5px;
+      color: var(--ink-dim);
+    }
+
+    .dz-sub kbd {
+      font-family: inherit;
+      background: var(--bg);
+      border: 1px solid var(--line);
+      padding: 1px 6px;
+      border-radius: 2px;
+      font-size: 11.5px;
+    }
+
+    .preview-img-wrap {
+      width: 100%;
+      height: 100%;
+      position: relative;
+    }
+
+    .preview-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .swap-btn {
+      position: absolute;
+      bottom: 16px;
+      right: 16px;
+      background: rgba(13, 17, 19, 0.85);
+      color: var(--ink);
+      border: 1px solid var(--line);
+      padding: 8px 14px;
+      font-size: 12.5px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      font-family: inherit;
+    }
+
+    .swap-btn:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    /* --- 3D pane --- */
+    #viewer-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    .viewer-empty {
+      color: var(--ink-dim);
+      font-size: 13.5px;
+      text-align: center;
+      padding: 32px;
+      line-height: 1.6;
+    }
+
+    .viewer-empty .glyph {
+      font-size: 26px;
+      display: block;
+      margin-bottom: 10px;
+      color: var(--accent-dim);
+    }
+
+    .viewer-hint {
+      position: absolute;
+      left: 16px;
+      bottom: 14px;
+      font-size: 11.5px;
+      color: var(--ink-dim);
+      pointer-events: none;
+      letter-spacing: 0.01em;
+    }
+
+    /* --- Loading overlay --- */
+    .overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(13, 17, 19, 0.82);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+    }
+
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border-radius: 50%;
+      border: 2px solid var(--line);
+      border-top-color: var(--accent);
+      animation: spin 0.85s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .overlay-txt {
+      font-size: 12.5px;
+      color: var(--ink-dim);
+      letter-spacing: 0.02em;
+    }
+
+    /* --- Action bar --- */
+    .actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-top: 22px;
+      flex-wrap: wrap;
+    }
+
+    .status {
+      font-size: 13px;
+      color: var(--ink-dim);
+      min-height: 18px;
+    }
+
+    .status.err {
+      color: var(--err);
+    }
+
+    .status.ok {
+      color: var(--ok);
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    button.primary,
+    a.download {
+      font-family: inherit;
+      font-size: 13.5px;
+      letter-spacing: 0.01em;
+      background: var(--accent);
+      color: #171008;
+      border: none;
+      padding: 12px 22px;
+      border-radius: var(--radius);
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: transform .1s ease, opacity .15s ease;
+    }
+
+    button.primary:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    button.primary:not(:disabled):hover {
+      transform: translateY(-1px);
+    }
+
+    button.ghost {
+      font-family: inherit;
+      font-size: 13.5px;
+      background: transparent;
+      color: var(--ink-dim);
+      border: 1px solid var(--line);
+      padding: 12px 18px;
+      border-radius: var(--radius);
+      cursor: pointer;
+    }
+
+    button.ghost:hover {
+      color: var(--ink);
+      border-color: var(--ink-dim);
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      padding: 20px 0 40px;
+    }
+
+    footer .wrap {
+      display: flex;
+      justify-content: space-between;
+      color: var(--ink-dim);
+      font-size: 12px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    footer code {
+      background: var(--bg-panel);
+      border: 1px solid var(--line);
+      padding: 1px 6px;
+      border-radius: 2px;
+    }
+  </style>
 </head>
+
 <body>
 
-<header>
-  <div class="wrap">
-    <div class="brand">
-      <h1>Depthcast<span class="mark">.</span></h1>
+  <header>
+    <div class="wrap">
+      <div class="brand">
+        <h1>Im3D<span class="mark">.</span></h1>
+      </div>
+      <div>
+        <p>Upload a photo, send it to the reconstruction backend, and orbit the resulting model — side by side, source
+          and object.</p><a class="nav-link" href="examples.html">Open examples comparison →</a>
+      </div>
     </div>
-    <p>Upload a photo, send it to the reconstruction backend, and orbit the resulting model — side by side, source and object.</p>
-  </div>
-</header>
+  </header>
 
-<main>
-  <div class="wrap">
+  <main>
+    <div class="wrap">
 
-    <div class="stage">
-      <!-- LEFT: image upload / preview -->
-      <div class="pane">
-        <div class="pane-head">
-          <span class="label">Source image</span>
-          <span class="idx">01</span>
+      <section class="examples">
+        <div class="examples-head">
+          <div>
+            <h2>Compare examples</h2>
+            <p class="examples-copy">Orbit and zoom each original-color model beside its source image.</p>
+          </div>
         </div>
-        <div class="pane-body">
-          <label id="dropzone" class="dropzone">
-            <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" />
-            <svg class="dz-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3">
-              <rect x="6" y="8" width="36" height="32" rx="2"/>
-              <circle cx="17" cy="18" r="3.2"/>
-              <path d="M6 32l10-10 8 8 6-6 12 12"/>
-            </svg>
-            <div class="dz-title">Drop an image, or click to browse</div>
-            <div class="dz-sub">PNG · JPG · WEBP — up to 15MB</div>
-          </label>
-          <div id="preview-wrap" class="preview-img-wrap" style="display:none;">
-            <img id="preview-img" alt="Uploaded preview" />
-            <button class="swap-btn" id="swap-btn" type="button">Choose different image</button>
+        <div id="examples-grid" class="examples-grid">
+          <div class="examples-empty">Loading generated examples…</div>
+        </div>
+      </section>
+
+      <div class="stage">
+        <!-- LEFT: image upload / preview -->
+        <div class="pane">
+          <div class="pane-head">
+            <span class="label">Source image</span>
+            <span class="idx">01</span>
+          </div>
+          <div class="pane-body">
+            <label id="dropzone" class="dropzone">
+              <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp" />
+              <svg class="dz-icon" viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="1.3">
+                <rect x="6" y="8" width="36" height="32" rx="2" />
+                <circle cx="17" cy="18" r="3.2" />
+                <path d="M6 32l10-10 8 8 6-6 12 12" />
+              </svg>
+              <div class="dz-title">Drop an image, or click to browse</div>
+              <div class="dz-sub">PNG · JPG · WEBP — up to 15MB</div>
+            </label>
+            <div id="preview-wrap" class="preview-img-wrap" style="display:none;">
+              <img id="preview-img" alt="Uploaded preview" />
+              <button class="swap-btn" id="swap-btn" type="button">Choose different image</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT: 3D viewer -->
+        <div class="pane">
+          <div class="pane-head">
+            <span class="label">Reconstruction</span>
+            <span class="idx">02</span>
+          </div>
+          <div class="pane-body" id="viewer-body">
+            <div class="viewer-empty" id="viewer-empty">
+              <span class="glyph">◇</span>
+              Waiting on a source image.<br />The model will orbit here once it's back from the backend.
+            </div>
+            <canvas id="viewer-canvas" style="display:none;"></canvas>
+            <div class="viewer-hint" id="viewer-hint" style="display:none;">drag to orbit · scroll to zoom</div>
+            <div class="overlay" id="overlay" style="display:none;">
+              <div class="spinner"></div>
+              <div class="overlay-txt" id="overlay-txt">Sending to backend…</div>
+            </div>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT: 3D viewer -->
-      <div class="pane">
-        <div class="pane-head">
-          <span class="label">Reconstruction</span>
-          <span class="idx">02</span>
-        </div>
-        <div class="pane-body" id="viewer-body">
-          <div class="viewer-empty" id="viewer-empty">
-            <span class="glyph">◇</span>
-            Waiting on a source image.<br/>The model will orbit here once it's back from the backend.
-          </div>
-          <canvas id="viewer-canvas" style="display:none;"></canvas>
-          <div class="viewer-hint" id="viewer-hint" style="display:none;">drag to orbit · scroll to zoom</div>
-          <div class="overlay" id="overlay" style="display:none;">
-            <div class="spinner"></div>
-            <div class="overlay-txt" id="overlay-txt">Sending to backend…</div>
-          </div>
+      <div class="actions">
+        <div class="status" id="status"></div>
+        <div class="btn-row">
+          <button class="ghost" id="reset-btn" type="button" style="display:none;">Reset</button>
+          <a class="download" id="download-btn" style="display:none;" download="model.glb">Download .glb</a>
+          <button class="primary" id="generate-btn" disabled>Generate 3D model</button>
         </div>
       </div>
+
     </div>
+  </main>
 
-    <div class="actions">
-      <div class="status" id="status"></div>
-      <div class="btn-row">
-        <button class="ghost" id="reset-btn" type="button" style="display:none;">Reset</button>
-        <a class="download" id="download-btn" style="display:none;" download="model.glb">Download .glb</a>
-        <button class="primary" id="generate-btn" disabled>Generate 3D model</button>
-      </div>
+  <footer>
+    <div class="wrap">
+      <span>Backend endpoint: <code id="endpoint-label">POST /generate</code></span>
+      <span>Renderer: three.js · ACES tonemapping · soft shadows</span>
     </div>
+  </footer>
 
-  </div>
-</main>
-
-<footer>
-  <div class="wrap">
-    <span>Backend endpoint: <code id="endpoint-label">POST /generate</code></span>
-    <span>Renderer: three.js · ACES tonemapping · soft shadows</span>
-  </div>
-</footer>
-
-<script type="importmap">
+  <script type="importmap">
 {
   "imports": {
     "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
@@ -241,280 +590,316 @@
   }
 }
 </script>
-<script type="module">
-import * as THREE from 'three';
-import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
-import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
-import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
+  <script type="module">
+    import * as THREE from 'three';
+    import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+    import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
+    import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 
-// ---- Configuration ----------------------------------------------------
-// Point this at your FastAPI backend. Override at runtime with:
-//   window.API_BASE = "https://your-api.example.com";
-const API_BASE = window.API_BASE || "http://127.0.0.1:8000";
-document.getElementById('endpoint-label').textContent = `POST ${API_BASE}/generate`;
+    // ---- Configuration ----------------------------------------------------
+    // Point this at your FastAPI backend. Override at runtime with:
+    //   window.API_BASE = "https://your-api.example.com";
+    const API_BASE = window.API_BASE || `${window.location.protocol}//${window.location.hostname}:8000`;
+    document.getElementById('endpoint-label').textContent = `POST ${API_BASE}/generate`;
 
-// ---- DOM refs -----------------------------------------------------------
-const dropzone     = document.getElementById('dropzone');
-const fileInput    = document.getElementById('file-input');
-const previewWrap  = document.getElementById('preview-wrap');
-const previewImg   = document.getElementById('preview-img');
-const swapBtn      = document.getElementById('swap-btn');
-const generateBtn  = document.getElementById('generate-btn');
-const resetBtn     = document.getElementById('reset-btn');
-const downloadBtn  = document.getElementById('download-btn');
-const statusEl     = document.getElementById('status');
-const overlay      = document.getElementById('overlay');
-const overlayTxt   = document.getElementById('overlay-txt');
-const viewerEmpty  = document.getElementById('viewer-empty');
-const viewerHint   = document.getElementById('viewer-hint');
-const canvas       = document.getElementById('viewer-canvas');
+    // ---- DOM refs -----------------------------------------------------------
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('file-input');
+    const previewWrap = document.getElementById('preview-wrap');
+    const previewImg = document.getElementById('preview-img');
+    const swapBtn = document.getElementById('swap-btn');
+    const generateBtn = document.getElementById('generate-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const downloadBtn = document.getElementById('download-btn');
+    const statusEl = document.getElementById('status');
+    const overlay = document.getElementById('overlay');
+    const overlayTxt = document.getElementById('overlay-txt');
+    const viewerEmpty = document.getElementById('viewer-empty');
+    const viewerHint = document.getElementById('viewer-hint');
+    const canvas = document.getElementById('viewer-canvas');
+    const examplesGrid = document.getElementById('examples-grid');
 
-let currentFile = null;
-let currentGlbUrl = null;
+    let currentFile = null;
+    let currentGlbUrl = null;
 
-// ---- Status helper --------------------------------------------------------
-function setStatus(msg, kind) {
-  statusEl.textContent = msg || '';
-  statusEl.className = 'status' + (kind ? ' ' + kind : '');
-}
+    // ---- Status helper --------------------------------------------------------
+    function setStatus(msg, kind) {
+      statusEl.textContent = msg || '';
+      statusEl.className = 'status' + (kind ? ' ' + kind : '');
+    }
 
-// ---- Upload / preview handling --------------------------------------------
-function handleFile(file) {
-  if (!file) return;
-  if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
-    setStatus('Please choose a PNG, JPG, or WEBP image.', 'err');
-    return;
-  }
-  currentFile = file;
-  const url = URL.createObjectURL(file);
-  previewImg.src = url;
-  dropzone.style.display = 'none';
-  previewWrap.style.display = 'block';
-  generateBtn.disabled = false;
-  setStatus('');
-  resetViewer();
-}
+    async function loadExamples() {
+      try {
+        const res = await fetch(`${API_BASE}/examples`);
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const payload = await res.json();
+        const examples = payload.examples || [];
+        examplesGrid.replaceChildren();
+        if (!examples.length) {
+          examplesGrid.innerHTML = '<div class="examples-empty">No generated examples yet. Upload an image below to create the first one.</div>';
+          return;
+        }
+        examples.slice(0, 12).forEach((example, index) => {
+          const card = document.createElement('article');
+          card.className = 'example-card';
+          card.innerHTML = `
+        <div class="example-card-head">
+          <span class="example-card-title">${example.title || `Example ${index + 1}`}</span>
+          <span class="example-card-label">SOURCE / 3D</span>
+        </div>
+        <div class="example-compare">
+          <img class="example-input" src="${API_BASE}${example.input_url}" alt="${example.title || 'Source image'}" loading="lazy">
+          <model-viewer class="example-model" src="${API_BASE}${example.model_url}" camera-controls shadow-intensity="1.2" exposure="1" tone-mapping="neutral" ar></model-viewer>
+        </div>
+        <div class="example-card-foot">Drag to orbit · scroll to zoom · original model color</div>`;
+          examplesGrid.appendChild(card);
+        });
+      } catch (error) {
+        examplesGrid.innerHTML = '<div class="examples-empty">Examples could not be loaded. Check that the backend is running.</div>';
+        console.error('Examples load failed:', error);
+      }
+    }
 
-dropzone.addEventListener('click', (e) => { /* label triggers input natively */ });
-fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
+    // ---- Upload / preview handling --------------------------------------------
+    function handleFile(file) {
+      if (!file) return;
+      if (!['image/png', 'image/jpeg', 'image/webp'].includes(file.type)) {
+        setStatus('Please choose a PNG, JPG, or WEBP image.', 'err');
+        return;
+      }
+      currentFile = file;
+      const url = URL.createObjectURL(file);
+      previewImg.src = url;
+      dropzone.style.display = 'none';
+      previewWrap.style.display = 'block';
+      generateBtn.disabled = false;
+      setStatus('');
+      resetViewer();
+    }
 
-['dragenter','dragover'].forEach(evt =>
-  dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add('drag'); })
-);
-['dragleave','drop'].forEach(evt =>
-  dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove('drag'); })
-);
-dropzone.addEventListener('drop', (e) => {
-  const file = e.dataTransfer.files[0];
-  handleFile(file);
-});
+    dropzone.addEventListener('click', (e) => { /* label triggers input natively */ });
+    fileInput.addEventListener('change', (e) => handleFile(e.target.files[0]));
 
-swapBtn.addEventListener('click', () => {
-  previewWrap.style.display = 'none';
-  dropzone.style.display = 'flex';
-  fileInput.value = '';
-  currentFile = null;
-  generateBtn.disabled = true;
-  resetViewer();
-  setStatus('');
-});
+    ['dragenter', 'dragover'].forEach(evt =>
+      dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.add('drag'); })
+    );
+    ['dragleave', 'drop'].forEach(evt =>
+      dropzone.addEventListener(evt, (e) => { e.preventDefault(); dropzone.classList.remove('drag'); })
+    );
+    dropzone.addEventListener('drop', (e) => {
+      const file = e.dataTransfer.files[0];
+      handleFile(file);
+    });
 
-resetBtn.addEventListener('click', () => {
-  swapBtn.click();
-});
+    swapBtn.addEventListener('click', () => {
+      previewWrap.style.display = 'none';
+      dropzone.style.display = 'flex';
+      fileInput.value = '';
+      currentFile = null;
+      generateBtn.disabled = true;
+      resetViewer();
+      setStatus('');
+    });
 
-// ---- Three.js viewer setup -------------------------------------------------
-let renderer, scene, camera, controls, currentModel, pmremGenerator, ground;
-let rafId = null;
+    resetBtn.addEventListener('click', () => {
+      swapBtn.click();
+    });
 
-function initViewer() {
-  renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.05;
-  renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // ---- Three.js viewer setup -------------------------------------------------
+    let renderer, scene, camera, controls, currentModel, pmremGenerator, ground;
+    let rafId = null;
 
-  scene = new THREE.Scene();
-  camera = new THREE.PerspectiveCamera(38, 1, 0.05, 50);
-  camera.position.set(1.6, 1.2, 2.1);
+    function initViewer() {
+      renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+      renderer.toneMapping = THREE.ACESFilmicToneMapping;
+      renderer.toneMappingExposure = 1.05;
+      renderer.outputColorSpace = THREE.SRGBColorSpace;
+      renderer.shadowMap.enabled = true;
+      renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-  pmremGenerator = new THREE.PMREMGenerator(renderer);
-  scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
+      scene = new THREE.Scene();
+      camera = new THREE.PerspectiveCamera(38, 1, 0.05, 50);
+      camera.position.set(1.6, 1.2, 2.1);
 
-  const key = new THREE.DirectionalLight(0xfff2e0, 2.2);
-  key.position.set(3, 4, 2);
-  key.castShadow = true;
-  key.shadow.mapSize.set(1024, 1024);
-  key.shadow.bias = -0.0025;
-  scene.add(key);
+      pmremGenerator = new THREE.PMREMGenerator(renderer);
+      scene.environment = pmremGenerator.fromScene(new RoomEnvironment(), 0.04).texture;
 
-  const fill = new THREE.DirectionalLight(0x9fc8ff, 0.55);
-  fill.position.set(-3, 1.5, -2);
-  scene.add(fill);
+      const key = new THREE.DirectionalLight(0xfff2e0, 2.2);
+      key.position.set(3, 4, 2);
+      key.castShadow = true;
+      key.shadow.mapSize.set(1024, 1024);
+      key.shadow.bias = -0.0025;
+      scene.add(key);
 
-  ground = new THREE.Mesh(
-    new THREE.PlaneGeometry(20, 20),
-    new THREE.ShadowMaterial({ opacity: 0.28 })
-  );
-  ground.rotation.x = -Math.PI / 2;
-  ground.position.y = -0.62;
-  ground.receiveShadow = true;
-  scene.add(ground);
+      const fill = new THREE.DirectionalLight(0x9fc8ff, 0.55);
+      fill.position.set(-3, 1.5, -2);
+      scene.add(fill);
 
-  controls = new OrbitControls(camera, renderer.domElement);
-  controls.enableDamping = true;
-  controls.dampingFactor = 0.08;
-  controls.minDistance = 0.6;
-  controls.maxDistance = 8;
-  controls.target.set(0, 0, 0);
-  controls.autoRotate = true;
-  controls.autoRotateSpeed = 1.4;
-  controls.addEventListener('start', () => controls.autoRotate = false);
+      ground = new THREE.Mesh(
+        new THREE.PlaneGeometry(20, 20),
+        new THREE.ShadowMaterial({ opacity: 0.28 })
+      );
+      ground.rotation.x = -Math.PI / 2;
+      ground.position.y = -0.62;
+      ground.receiveShadow = true;
+      scene.add(ground);
 
-  resizeRenderer();
-  window.addEventListener('resize', resizeRenderer);
+      controls = new OrbitControls(camera, renderer.domElement);
+      controls.enableDamping = true;
+      controls.dampingFactor = 0.08;
+      controls.minDistance = 0.6;
+      controls.maxDistance = 8;
+      controls.target.set(0, 0, 0);
+      controls.autoRotate = true;
+      controls.autoRotateSpeed = 1.4;
+      controls.addEventListener('start', () => controls.autoRotate = false);
 
-  animate();
-}
+      resizeRenderer();
+      window.addEventListener('resize', resizeRenderer);
 
-function resizeRenderer() {
-  const body = document.getElementById('viewer-body');
-  const w = body.clientWidth, h = body.clientHeight;
-  if (!w || !h) return;
-  renderer.setSize(w, h, false);
-  camera.aspect = w / h;
-  camera.updateProjectionMatrix();
-}
+      animate();
+    }
 
-function animate() {
-  rafId = requestAnimationFrame(animate);
-  controls.update();
-  renderer.render(scene, camera);
-}
+    function resizeRenderer() {
+      const body = document.getElementById('viewer-body');
+      const w = body.clientWidth, h = body.clientHeight;
+      if (!w || !h) return;
+      renderer.setSize(w, h, false);
+      camera.aspect = w / h;
+      camera.updateProjectionMatrix();
+    }
 
-function clearModel() {
-  if (currentModel) {
-    scene.remove(currentModel);
-    currentModel.traverse((obj) => {
-      if (obj.geometry) obj.geometry.dispose();
-      if (obj.material) {
-        const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
-        mats.forEach(m => { if (m.map) m.map.dispose(); m.dispose(); });
+    function animate() {
+      rafId = requestAnimationFrame(animate);
+      controls.update();
+      renderer.render(scene, camera);
+    }
+
+    function clearModel() {
+      if (currentModel) {
+        scene.remove(currentModel);
+        currentModel.traverse((obj) => {
+          if (obj.geometry) obj.geometry.dispose();
+          if (obj.material) {
+            const mats = Array.isArray(obj.material) ? obj.material : [obj.material];
+            mats.forEach(m => { if (m.map) m.map.dispose(); m.dispose(); });
+          }
+        });
+        currentModel = null;
+      }
+    }
+
+    function loadModel(url) {
+      const loader = new GLTFLoader();
+      loader.load(
+        url,
+        (gltf) => {
+          clearModel();
+          const model = gltf.scene;
+          model.traverse((obj) => {
+            if (obj.isMesh) {
+              obj.castShadow = true;
+              obj.receiveShadow = true;
+              if (obj.material) obj.material.envMapIntensity = 1.0;
+            }
+          });
+
+          // Frame the model nicely regardless of its native scale.
+          const box = new THREE.Box3().setFromObject(model);
+          const size = new THREE.Vector3();
+          box.getSize(size);
+          const center = new THREE.Vector3();
+          box.getCenter(center);
+          model.position.sub(center);
+
+          const maxDim = Math.max(size.x, size.y, size.z) || 1;
+          const scale = 1.4 / maxDim;
+          model.scale.setScalar(scale);
+
+          const groundOffset = (size.y * scale) / 2;
+          ground.position.y = -groundOffset - 0.02;
+          model.position.y += groundOffset;
+
+          scene.add(model);
+          currentModel = model;
+
+          controls.autoRotate = true;
+          overlay.style.display = 'none';
+          canvas.style.display = 'block';
+          viewerHint.style.display = 'block';
+          viewerEmpty.style.display = 'none';
+          setStatus('Model ready. Drag to orbit, scroll to zoom.', 'ok');
+        },
+        undefined,
+        (err) => {
+          console.error(err);
+          overlay.style.display = 'none';
+          setStatus('Could not load the returned .glb file.', 'err');
+        }
+      );
+    }
+
+    function resetViewer() {
+      clearModel();
+      canvas.style.display = 'none';
+      viewerHint.style.display = 'none';
+      viewerEmpty.style.display = 'flex';
+      overlay.style.display = 'none';
+      downloadBtn.style.display = 'none';
+      resetBtn.style.display = 'none';
+      if (currentGlbUrl) { URL.revokeObjectURL(currentGlbUrl); currentGlbUrl = null; }
+    }
+
+    initViewer();
+    loadExamples();
+
+    // ---- Generate flow ----------------------------------------------------
+    generateBtn.addEventListener('click', async () => {
+      if (!currentFile) return;
+
+      generateBtn.disabled = true;
+      overlay.style.display = 'flex';
+      canvas.style.display = 'none';
+      viewerHint.style.display = 'none';
+      viewerEmpty.style.display = 'none';
+      overlayTxt.textContent = 'Uploading image…';
+      setStatus('');
+
+      try {
+        const form = new FormData();
+        form.append('image', currentFile);
+
+        overlayTxt.textContent = 'Reconstructing 3D geometry…';
+        const res = await fetch(`${API_BASE}/generate`, { method: 'POST', body: form });
+
+        if (!res.ok) {
+          let detail = res.statusText;
+          try { const j = await res.json(); detail = j.detail || detail; } catch (_) { }
+          throw new Error(detail);
+        }
+
+        overlayTxt.textContent = 'Loading model into viewer…';
+        const blob = await res.blob();
+        if (currentGlbUrl) URL.revokeObjectURL(currentGlbUrl);
+        currentGlbUrl = URL.createObjectURL(blob);
+
+        loadModel(currentGlbUrl);
+
+        downloadBtn.href = currentGlbUrl;
+        downloadBtn.style.display = 'inline-flex';
+        resetBtn.style.display = 'inline-block';
+        loadExamples();
+      } catch (err) {
+        console.error(err);
+        overlay.style.display = 'none';
+        viewerEmpty.style.display = 'flex';
+        setStatus(`Generation failed: ${err.message}. Is the backend running at ${API_BASE}?`, 'err');
+      } finally {
+        generateBtn.disabled = !currentFile;
       }
     });
-    currentModel = null;
-  }
-}
-
-function loadModel(url) {
-  const loader = new GLTFLoader();
-  loader.load(
-    url,
-    (gltf) => {
-      clearModel();
-      const model = gltf.scene;
-      model.traverse((obj) => {
-        if (obj.isMesh) {
-          obj.castShadow = true;
-          obj.receiveShadow = true;
-          if (obj.material) obj.material.envMapIntensity = 1.0;
-        }
-      });
-
-      // Frame the model nicely regardless of its native scale.
-      const box = new THREE.Box3().setFromObject(model);
-      const size = new THREE.Vector3();
-      box.getSize(size);
-      const center = new THREE.Vector3();
-      box.getCenter(center);
-      model.position.sub(center);
-
-      const maxDim = Math.max(size.x, size.y, size.z) || 1;
-      const scale = 1.4 / maxDim;
-      model.scale.setScalar(scale);
-
-      const groundOffset = (size.y * scale) / 2;
-      ground.position.y = -groundOffset - 0.02;
-      model.position.y += groundOffset;
-
-      scene.add(model);
-      currentModel = model;
-
-      controls.autoRotate = true;
-      overlay.style.display = 'none';
-      canvas.style.display = 'block';
-      viewerHint.style.display = 'block';
-      viewerEmpty.style.display = 'none';
-      setStatus('Model ready. Drag to orbit, scroll to zoom.', 'ok');
-    },
-    undefined,
-    (err) => {
-      console.error(err);
-      overlay.style.display = 'none';
-      setStatus('Could not load the returned .glb file.', 'err');
-    }
-  );
-}
-
-function resetViewer() {
-  clearModel();
-  canvas.style.display = 'none';
-  viewerHint.style.display = 'none';
-  viewerEmpty.style.display = 'flex';
-  overlay.style.display = 'none';
-  downloadBtn.style.display = 'none';
-  resetBtn.style.display = 'none';
-  if (currentGlbUrl) { URL.revokeObjectURL(currentGlbUrl); currentGlbUrl = null; }
-}
-
-initViewer();
-
-// ---- Generate flow ----------------------------------------------------
-generateBtn.addEventListener('click', async () => {
-  if (!currentFile) return;
-
-  generateBtn.disabled = true;
-  overlay.style.display = 'flex';
-  canvas.style.display = 'none';
-  viewerHint.style.display = 'none';
-  viewerEmpty.style.display = 'none';
-  overlayTxt.textContent = 'Uploading image…';
-  setStatus('');
-
-  try {
-    const form = new FormData();
-    form.append('image', currentFile);
-
-    overlayTxt.textContent = 'Reconstructing 3D geometry…';
-    const res = await fetch(`${API_BASE}/generate`, { method: 'POST', body: form });
-
-    if (!res.ok) {
-      let detail = res.statusText;
-      try { const j = await res.json(); detail = j.detail || detail; } catch (_) {}
-      throw new Error(detail);
-    }
-
-    overlayTxt.textContent = 'Loading model into viewer…';
-    const blob = await res.blob();
-    if (currentGlbUrl) URL.revokeObjectURL(currentGlbUrl);
-    currentGlbUrl = URL.createObjectURL(blob);
-
-    loadModel(currentGlbUrl);
-
-    downloadBtn.href = currentGlbUrl;
-    downloadBtn.style.display = 'inline-flex';
-    resetBtn.style.display = 'inline-block';
-  } catch (err) {
-    console.error(err);
-    overlay.style.display = 'none';
-    viewerEmpty.style.display = 'flex';
-    setStatus(`Generation failed: ${err.message}. Is the backend running at ${API_BASE}?`, 'err');
-  } finally {
-    generateBtn.disabled = !currentFile;
-  }
-});
-</script>
+  </script>
 </body>
+
 </html>
