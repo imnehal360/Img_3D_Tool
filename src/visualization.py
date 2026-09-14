@@ -21,7 +21,7 @@ def write_basic_glb_preview(model_path: str | Path, output_path: str | Path) -> 
       width: 100%;
       height: 100vh;
       background: #151515;
-      filter: grayscale(1) contrast(1.08);
+      
     }}
   </style>
 </head>
