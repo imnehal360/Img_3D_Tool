@@ -1,0 +1,469 @@
+{
+  "examples": [
+    {
+      "id": "198ba87c2f0c4fda8591c42fc88f492b",
+      "title": "Comparison 1",
+      "static": true,
+      "input_url": "assets/198ba87c2f0c4fda8591c42fc88f492b/source.png",
+      "system_model_url": "assets/198ba87c2f0c4fda8591c42fc88f492b/model.glb",
+      "model_url": "assets/198ba87c2f0c4fda8591c42fc88f492b/model.glb",
+      "meshy_image_url": "assets/198ba87c2f0c4fda8591c42fc88f492b/meshy.png",
+      "metrics": {
+        "preprocessing_time_sec": 2.8362,
+        "inference_time_sec": 119.7556,
+        "postprocessing_time_sec": 3.0842,
+        "total_time_sec": 173.3571,
+        "model_name": "microsoft/TRELLIS-image-large",
+        "model_version": "442aa1e1afb9014e80681d3bf604e8d728a86ee7",
+        "environment": {
+          "python": "3.10.20",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.4.0+cu121",
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "gpu_name": "Tesla V100-FHHL-16GB",
+          "gpu_total_memory_gb": 15.77,
+          "nvidia_smi": "Tesla V100-FHHL-16GB, 16384 MiB, 580.173.02"
+        },
+        "mesh": {
+          "valid": true,
+          "vertices": 27159,
+          "faces": 40372,
+          "components": 532,
+          "bounding_box": [
+            0.723797,
+            1.000073,
+            0.651945
+          ],
+          "file_size_mb": 1.9785,
+          "texture_count": 1,
+          "texture_resolutions": [
+            [
+              1024,
+              1024
+            ]
+          ],
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "3c79609f7a2c4efe915a59536b481f7a",
+      "title": "Comparison 2",
+      "static": true,
+      "input_url": "assets/3c79609f7a2c4efe915a59536b481f7a/source.jpg",
+      "system_model_url": "assets/3c79609f7a2c4efe915a59536b481f7a/model.glb",
+      "model_url": "assets/3c79609f7a2c4efe915a59536b481f7a/model.glb",
+      "meshy_image_url": "assets/3c79609f7a2c4efe915a59536b481f7a/meshy.png",
+      "metrics": {
+        "preprocessing_time_sec": 3.035,
+        "inference_time_sec": 110.0985,
+        "postprocessing_time_sec": 6.5663,
+        "total_time_sec": 170.8396,
+        "model_name": "microsoft/TRELLIS-image-large",
+        "model_version": "442aa1e1afb9014e80681d3bf604e8d728a86ee7",
+        "environment": {
+          "python": "3.10.20",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.4.0+cu121",
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "gpu_name": "Tesla V100-FHHL-16GB",
+          "gpu_total_memory_gb": 15.77,
+          "nvidia_smi": "Tesla V100-FHHL-16GB, 16384 MiB, 580.173.02"
+        },
+        "mesh": {
+          "valid": true,
+          "vertices": 36385,
+          "faces": 51329,
+          "components": 929,
+          "bounding_box": [
+            0.85917,
+            0.983947,
+            0.999809
+          ],
+          "file_size_mb": 2.4308,
+          "texture_count": 1,
+          "texture_resolutions": [
+            [
+              1024,
+              1024
+            ]
+          ],
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "3e497411b5b1475ab4531108b91ab818",
+      "title": "Comparison 3",
+      "static": true,
+      "input_url": "assets/3e497411b5b1475ab4531108b91ab818/source.jpg",
+      "system_model_url": "assets/3e497411b5b1475ab4531108b91ab818/model.glb",
+      "model_url": "assets/3e497411b5b1475ab4531108b91ab818/model.glb",
+      "meshy_image_url": "assets/3e497411b5b1475ab4531108b91ab818/meshy.png",
+      "metrics": {
+        "preprocessing_time_sec": 6.3838,
+        "inference_time_sec": 56.7351,
+        "postprocessing_time_sec": 0.3341,
+        "total_time_sec": 113.3147,
+        "model_name": "microsoft/TRELLIS-image-large",
+        "model_version": "442aa1e1afb9014e80681d3bf604e8d728a86ee7",
+        "environment": {
+          "python": "3.10.20",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.4.0+cu121",
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "gpu_name": "Tesla V100-FHHL-16GB",
+          "gpu_total_memory_gb": 15.77,
+          "nvidia_smi": "Tesla V100-FHHL-16GB, 16384 MiB, 580.173.02"
+        },
+        "mesh": {
+          "valid": true,
+          "vertices": 5119,
+          "faces": 7430,
+          "components": 88,
+          "bounding_box": [
+            0.536271,
+            1.000924,
+            0.600385
+          ],
+          "file_size_mb": 1.3511,
+          "texture_count": 1,
+          "texture_resolutions": [
+            [
+              1024,
+              1024
+            ]
+          ],
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "3f027bb2d2894ea6b83f99432f303b75",
+      "title": "Comparison 4",
+      "static": true,
+      "input_url": "assets/3f027bb2d2894ea6b83f99432f303b75/source.jpg",
+      "system_model_url": "assets/3f027bb2d2894ea6b83f99432f303b75/model.glb",
+      "model_url": "assets/3f027bb2d2894ea6b83f99432f303b75/model.glb",
+      "meshy_image_url": "assets/3f027bb2d2894ea6b83f99432f303b75/meshy.png",
+      "metrics": {
+        "preprocessing_time_sec": 2.7562,
+        "inference_time_sec": 85.8335,
+        "postprocessing_time_sec": 0.3997,
+        "total_time_sec": 139.0129,
+        "model_name": "microsoft/TRELLIS-image-large",
+        "model_version": "442aa1e1afb9014e80681d3bf604e8d728a86ee7",
+        "environment": {
+          "python": "3.10.20",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.4.0+cu121",
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "gpu_name": "Tesla V100-FHHL-16GB",
+          "gpu_total_memory_gb": 15.77,
+          "nvidia_smi": "Tesla V100-FHHL-16GB, 16384 MiB, 580.173.02"
+        },
+        "mesh": {
+          "valid": true,
+          "vertices": 5415,
+          "faces": 7648,
+          "components": 110,
+          "bounding_box": [
+            0.536071,
+            1.000324,
+            0.60346
+          ],
+          "file_size_mb": 1.3652,
+          "texture_count": 1,
+          "texture_resolutions": [
+            [
+              1024,
+              1024
+            ]
+          ],
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "4f3c34238a8b48f09acbc4b8a10526d2",
+      "title": "Comparison 5",
+      "static": true,
+      "input_url": "assets/4f3c34238a8b48f09acbc4b8a10526d2/source.jpg",
+      "system_model_url": "assets/4f3c34238a8b48f09acbc4b8a10526d2/model.glb",
+      "model_url": "assets/4f3c34238a8b48f09acbc4b8a10526d2/model.glb",
+      "meshy_image_url": "assets/4f3c34238a8b48f09acbc4b8a10526d2/meshy.png",
+      "metrics": {
+        "preprocessing_time_sec": 10.4691,
+        "inference_time_sec": 107.6137,
+        "postprocessing_time_sec": 1.2301,
+        "total_time_sec": 168.9121,
+        "model_name": "microsoft/TRELLIS-image-large",
+        "model_version": "442aa1e1afb9014e80681d3bf604e8d728a86ee7",
+        "environment": {
+          "python": "3.10.20",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.4.0+cu121",
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "gpu_name": "Tesla V100-FHHL-16GB",
+          "gpu_total_memory_gb": 15.77,
+          "nvidia_smi": "Tesla V100-FHHL-16GB, 16384 MiB, 580.173.02"
+        },
+        "mesh": {
+          "valid": true,
+          "vertices": 13744,
+          "faces": 20330,
+          "components": 289,
+          "bounding_box": [
+            0.938753,
+            0.999024,
+            0.612972
+          ],
+          "file_size_mb": 1.5399,
+          "texture_count": 1,
+          "texture_resolutions": [
+            [
+              1024,
+              1024
+            ]
+          ],
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "535b7ada2cff4802be8a1bf77846ece8",
+      "title": "Comparison 6",
+      "static": true,
+      "input_url": "assets/535b7ada2cff4802be8a1bf77846ece8/source.jpg",
+      "system_model_url": "assets/535b7ada2cff4802be8a1bf77846ece8/model.glb",
+      "model_url": "assets/535b7ada2cff4802be8a1bf77846ece8/model.glb",
+      "meshy_image_url": "assets/535b7ada2cff4802be8a1bf77846ece8/meshy.png",
+      "metrics": {
+        "preprocessing_time_sec": 7.8318,
+        "inference_time_sec": 46.0387,
+        "postprocessing_time_sec": 1.693,
+        "total_time_sec": 115.4481,
+        "model_name": "microsoft/TRELLIS-image-large",
+        "model_version": "442aa1e1afb9014e80681d3bf604e8d728a86ee7",
+        "environment": {
+          "python": "3.10.20",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.4.0+cu121",
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "gpu_name": "Tesla V100-FHHL-16GB",
+          "gpu_total_memory_gb": 15.77,
+          "nvidia_smi": "Tesla V100-FHHL-16GB, 16384 MiB, 580.173.02"
+        },
+        "mesh": {
+          "valid": true,
+          "vertices": 8332,
+          "faces": 9492,
+          "components": 477,
+          "bounding_box": [
+            0.408826,
+            0.234277,
+            1.000833
+          ],
+          "file_size_mb": 1.5659,
+          "texture_count": 1,
+          "texture_resolutions": [
+            [
+              1024,
+              1024
+            ]
+          ],
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "778319a5e08140c49a7e709681ac4abc",
+      "title": "Comparison 7",
+      "static": true,
+      "input_url": "assets/778319a5e08140c49a7e709681ac4abc/source.jpg",
+      "system_model_url": "assets/778319a5e08140c49a7e709681ac4abc/model.glb",
+      "model_url": "assets/778319a5e08140c49a7e709681ac4abc/model.glb",
+      "meshy_image_url": "assets/778319a5e08140c49a7e709681ac4abc/meshy.png",
+      "metrics": {
+        "preprocessing_time_sec": 10.7321,
+        "inference_time_sec": 112.4957,
+        "postprocessing_time_sec": 1.2952,
+        "total_time_sec": 185.2739,
+        "model_name": "microsoft/TRELLIS-image-large",
+        "model_version": "442aa1e1afb9014e80681d3bf604e8d728a86ee7",
+        "environment": {
+          "python": "3.10.20",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.4.0+cu121",
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "gpu_name": "Tesla V100-FHHL-16GB",
+          "gpu_total_memory_gb": 15.77,
+          "nvidia_smi": "Tesla V100-FHHL-16GB, 16384 MiB, 580.173.02"
+        },
+        "mesh": {
+          "valid": true,
+          "vertices": 13722,
+          "faces": 20300,
+          "components": 299,
+          "bounding_box": [
+            0.938728,
+            0.999001,
+            0.613011
+          ],
+          "file_size_mb": 1.5265,
+          "texture_count": 1,
+          "texture_resolutions": [
+            [
+              1024,
+              1024
+            ]
+          ],
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "b0aadb4a4cb7469791b059946be30b3b",
+      "title": "Comparison 8",
+      "static": true,
+      "input_url": "assets/b0aadb4a4cb7469791b059946be30b3b/source.jpg",
+      "system_model_url": "assets/b0aadb4a4cb7469791b059946be30b3b/model.glb",
+      "model_url": "assets/b0aadb4a4cb7469791b059946be30b3b/model.glb",
+      "meshy_image_url": "assets/b0aadb4a4cb7469791b059946be30b3b/meshy.png",
+      "metrics": {
+        "preprocessing_time_sec": 12.6404,
+        "inference_time_sec": 82.7763,
+        "postprocessing_time_sec": 2.0954,
+        "total_time_sec": 148.8175,
+        "model_name": "microsoft/TRELLIS-image-large",
+        "model_version": "442aa1e1afb9014e80681d3bf604e8d728a86ee7",
+        "environment": {
+          "python": "3.10.20",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.4.0+cu121",
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "gpu_name": "Tesla V100-FHHL-16GB",
+          "gpu_total_memory_gb": 15.77,
+          "nvidia_smi": "Tesla V100-FHHL-16GB, 16384 MiB, 580.173.02"
+        },
+        "mesh": {
+          "valid": true,
+          "vertices": 16233,
+          "faces": 23020,
+          "components": 494,
+          "bounding_box": [
+            0.999696,
+            0.493946,
+            0.444382
+          ],
+          "file_size_mb": 1.6211,
+          "texture_count": 1,
+          "texture_resolutions": [
+            [
+              1024,
+              1024
+            ]
+          ],
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "caf8e355b36a4915ade7779ccbf0d8db",
+      "title": "Comparison 9",
+      "static": true,
+      "input_url": "assets/caf8e355b36a4915ade7779ccbf0d8db/source.png",
+      "system_model_url": "assets/caf8e355b36a4915ade7779ccbf0d8db/model.glb",
+      "model_url": "assets/caf8e355b36a4915ade7779ccbf0d8db/model.glb",
+      "meshy_image_url": "assets/caf8e355b36a4915ade7779ccbf0d8db/meshy.png",
+      "metrics": {
+        "preprocessing_time_sec": 3.2593,
+        "inference_time_sec": 99.6329,
+        "postprocessing_time_sec": 1.9696,
+        "total_time_sec": 156.0871,
+        "model_name": "microsoft/TRELLIS-image-large",
+        "model_version": "442aa1e1afb9014e80681d3bf604e8d728a86ee7",
+        "environment": {
+          "python": "3.10.20",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.4.0+cu121",
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "gpu_name": "Tesla V100-FHHL-16GB",
+          "gpu_total_memory_gb": 15.77,
+          "nvidia_smi": "Tesla V100-FHHL-16GB, 16384 MiB, 580.173.02"
+        },
+        "mesh": {
+          "valid": true,
+          "vertices": 448870,
+          "faces": 897864,
+          "components": 11,
+          "bounding_box": [
+            0.88037,
+            0.782327,
+            1.000144
+          ],
+          "file_size_mb": 15.4129,
+          "texture_count": 0,
+          "texture_resolutions": [],
+          "error": null
+        }
+      }
+    },
+    {
+      "id": "db793eecf83049a79e14dc82c64c473a",
+      "title": "Comparison 10",
+      "static": true,
+      "input_url": "assets/db793eecf83049a79e14dc82c64c473a/source.jpg",
+      "system_model_url": "assets/db793eecf83049a79e14dc82c64c473a/model.glb",
+      "model_url": "assets/db793eecf83049a79e14dc82c64c473a/model.glb",
+      "meshy_image_url": "assets/db793eecf83049a79e14dc82c64c473a/meshy.png",
+      "metrics": {
+        "preprocessing_time_sec": 2.9449,
+        "inference_time_sec": 43.7958,
+        "postprocessing_time_sec": 0.3233,
+        "total_time_sec": 102.8701,
+        "model_name": "microsoft/TRELLIS-image-large",
+        "model_version": "442aa1e1afb9014e80681d3bf604e8d728a86ee7",
+        "environment": {
+          "python": "3.10.20",
+          "platform": "Linux-7.0.0-31-generic-x86_64-with-glibc2.39",
+          "torch_version": "2.4.0+cu121",
+          "cuda_available": true,
+          "cuda_version": "12.1",
+          "gpu_name": "Tesla V100-FHHL-16GB",
+          "gpu_total_memory_gb": 15.77,
+          "nvidia_smi": "Tesla V100-FHHL-16GB, 16384 MiB, 580.173.02"
+        },
+        "mesh": {
+          "valid": true,
+          "vertices": 5442,
+          "faces": 7654,
+          "components": 90,
+          "bounding_box": [
+            0.536169,
+            1.000321,
+            0.603926
+          ],
+          "file_size_mb": 1.3646,
+          "texture_count": 1,
+          "texture_resolutions": [
+            [
+              1024,
+              1024
+            ]
+          ],
+          "error": null
+        }
+      }
+    }
+  ]
+}
