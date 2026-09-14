@@ -599,7 +599,7 @@
     // ---- Configuration ----------------------------------------------------
     // Point this at your FastAPI backend. Override at runtime with:
     //   window.API_BASE = "https://your-api.example.com";
-    const API_BASE = window.API_BASE || `${window.location.protocol}//${window.location.hostname}:8000`;
+    const API_BASE = window.API_BASE || window.location.origin;
     document.getElementById('endpoint-label').textContent = `POST ${API_BASE}/generate`;
 
     // ---- DOM refs -----------------------------------------------------------

@@ -10,6 +10,7 @@ from typing import Any
 from fastapi import FastAPI, File, HTTPException, UploadFile
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from .config import DEFAULT_CONFIG, PipelineConfig
 from .pipeline import run_single_image_pipeline
@@ -179,6 +180,10 @@ def create_app(
             await image.close()
 
         return FileResponse(path=result.model_path, media_type="model/gltf-binary", filename="model.glb")
+
+    frontend_dir = Path(__file__).resolve().parents[1] / "frontend"
+    if frontend_dir.is_dir():
+        app.mount("/", StaticFiles(directory=frontend_dir, html=True), name="frontend")
 
     return app
 
