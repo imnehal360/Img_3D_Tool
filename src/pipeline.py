@@ -46,7 +46,7 @@ def run_single_image_pipeline(
 
     active_generator = generator or TrellisGenerator(config)
     generation = active_generator.generate(prep.processed_path, out_dir)
-    apply_neutral_grayscale(generation.model_path)
+    # apply_neutral_grayscale(generation.model_path)
 
     post_start = time.perf_counter()
     stats = get_mesh_stats(generation.model_path)
