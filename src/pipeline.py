@@ -10,7 +10,7 @@ from .config import DEFAULT_CONFIG, PipelineConfig
 from .environment import get_environment_info
 from .evaluation import PipelineMetrics, write_metrics
 from .generator import TrellisGenerator
-from .postprocessing import apply_neutral_grayscale, get_mesh_stats
+from .postprocessing import get_mesh_stats
 from .preprocessing import preprocess_image
 from .visualization import write_basic_glb_preview
 
